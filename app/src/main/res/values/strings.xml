@@ -2,6 +2,7 @@
     <string name="app_name">Gapsi</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
+    <string name="list_fragment_label">GAPSI Test</string>
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
