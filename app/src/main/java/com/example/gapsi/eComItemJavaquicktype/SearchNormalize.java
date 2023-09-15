@@ -2,6 +2,7 @@ package com.example.gapsi.eComItemJavaquicktype;
 
 import com.fasterxml.jackson.annotation.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchNormalize {
     private String verticalID;
     private String normalizedQuery;

@@ -4,22 +4,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.gapsi.eComItemJavaquicktype.ItemElement;
-import com.example.gapsi.placeholder.PlaceholderContent.PlaceholderItem;
 import com.example.gapsi.databinding.FragmentItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<ItemElement> mValues;
@@ -64,6 +58,7 @@ public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComIt
         }
     }
 
+    public void clear(){ mValues.clear(); }
     public void setResults(List<ItemElement> items){
         mValues.addAll(items);
     }

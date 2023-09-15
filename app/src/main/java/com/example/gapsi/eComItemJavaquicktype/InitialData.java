@@ -6,8 +6,6 @@ public class InitialData {
     private SearchResult searchResult;
     private ContentLayoutPageMetadata pageMetadata;
     private Headers headers;
-    private ModuleDataByZone moduleDataByZone;
-    private InitialDataContentLayout contentLayout;
     private LayoutContainerData layoutContainerData;
 
     @JsonProperty("searchResult")
@@ -24,16 +22,6 @@ public class InitialData {
     public Headers getHeaders() { return headers; }
     @JsonProperty("headers")
     public void setHeaders(Headers value) { this.headers = value; }
-
-    @JsonProperty("moduleDataByZone")
-    public ModuleDataByZone getModuleDataByZone() { return moduleDataByZone; }
-    @JsonProperty("moduleDataByZone")
-    public void setModuleDataByZone(ModuleDataByZone value) { this.moduleDataByZone = value; }
-
-    @JsonProperty("contentLayout")
-    public InitialDataContentLayout getContentLayout() { return contentLayout; }
-    @JsonProperty("contentLayout")
-    public void setContentLayout(InitialDataContentLayout value) { this.contentLayout = value; }
 
     @JsonProperty("layoutContainerData")
     public LayoutContainerData getLayoutContainerData() { return layoutContainerData; }

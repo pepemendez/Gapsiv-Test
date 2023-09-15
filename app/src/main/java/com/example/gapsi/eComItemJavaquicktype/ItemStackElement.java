@@ -4,17 +4,10 @@ import com.fasterxml.jackson.annotation.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemStackElement {
-    private Meta meta;
     private String title;
     private String totalItemCountDisplay;
     private long count;
     private ItemElement[] items;
-
-
-    @JsonProperty("meta")
-    public Meta getMeta() { return meta; }
-    @JsonProperty("meta")
-    public void setMeta(Meta value) { this.meta = value; }
 
     @JsonProperty("title")
     public String getTitle() { return title; }

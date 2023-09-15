@@ -161,7 +161,7 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
     public boolean onQueryTextSubmit(String query) {
         Log.d("EComItemFragment", "onQueryTextSubmit" + query);
         this.query = query;
-        adapter.filter(query);
+        adapter.clear();
 
         searchItems(query);
         return false;
@@ -169,11 +169,6 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.d("EComItemFragment", "onQueryTextChange" + newText);
-        if(this.query.length() > newText.length()){
-            this.query = newText;
-            adapter.filter(newText);
-        }
         return false;
     }
 }
