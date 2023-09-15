@@ -7,8 +7,7 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 public class HistoricQuery extends RealmObject {
-    @PrimaryKey private ObjectId id;
-    @Required private String query;
+    @PrimaryKey private String query;
 
     public HistoricQuery(String _query) {this.query = _query;}
 

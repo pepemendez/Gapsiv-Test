@@ -1,5 +1,7 @@
 package com.example.gapsi;
 
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +12,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.gapsi.databinding.ActivityMainBinding;
 
+import android.provider.SearchRecentSuggestions;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -34,6 +38,23 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
+            Log.d("MainActivity", "search: " + query);
+        }
     }
 
     @Override

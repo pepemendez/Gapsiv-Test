@@ -1,5 +1,6 @@
 package com.example.gapsi;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -25,14 +26,11 @@ import com.example.gapsi.eComItemJavaquicktype.ItemStackElement;
 import com.example.gapsi.repository.eCommerceComponent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.bson.types.ObjectId;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import io.realm.Realm;
-import io.realm.RealmQuery;
 
 /**
  * A fragment representing a list of Items.
@@ -106,25 +104,13 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
 
         binding.searchView.setOnClickListener(v -> {});
 
-        //binding.searchView.getSuggestionsAdapter()
-
         binding.searchView.setOnQueryTextListener(this);
 
         binding.progressbar.setVisibility(View.GONE);
 
-        try {
-            Realm realm = Realm.getDefaultInstance();
-            RealmQuery<HistoricQuery> historic = realm.where(HistoricQuery.class);
-            List<HistoricQuery> historicQuery =  Arrays.asList(historic.findAllAsync().stream().toArray(HistoricQuery[]::new));
-
-            for (HistoricQuery queries: historicQuery) {
-                Log.d("EComItemFragment", "Queries: " + queries);
-            }
-
-        }catch(Exception e){
-            //handle exceptions
-        }
-
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        binding.searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        binding.searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
     }
 
     public void searchItems(String query){
@@ -182,17 +168,6 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
         this.query = query;
         adapter.clear();
         searchItems(query);
-
-        try {
-            Realm realm = Realm.getDefaultInstance();
-            realm.executeTransaction(r->{
-                HistoricQuery historicQuery = r.createObject(HistoricQuery.class, new ObjectId());
-                historicQuery.setQuery(query);
-            });
-        }catch(Exception e){
-            //handle exceptions
-        }
-
 
         return false;
     }

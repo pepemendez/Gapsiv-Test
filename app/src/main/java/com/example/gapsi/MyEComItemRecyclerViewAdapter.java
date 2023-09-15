@@ -41,8 +41,9 @@ public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComIt
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        Long price = mValues.get(position).getPrice();
         holder.mItem = mValues.get(position);
-        holder.mContentView.setText(mValues.get(position).getName() + "\nPrice: " + mValues.get(position).getPrice());
+        holder.mContentView.setText(mValues.get(position).getName() + (price != null ? ("\nPrice: " + price) : ""));
         Glide.with(this.context)
                 .load(mValues.get(position).getImage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
