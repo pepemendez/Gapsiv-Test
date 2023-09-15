@@ -92,7 +92,7 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            adapter = new MyEComItemRecyclerViewAdapter();
+            adapter = new MyEComItemRecyclerViewAdapter(context);
 
             recyclerView.setAdapter(adapter);
         }
@@ -128,7 +128,7 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
                             .getItemStacks());
 
                     for(ItemStackElement element:elements) {
-                        List<ItemElement> items = Arrays.asList(element.getItems());
+                        List<ItemElement> items = Arrays.asList(Arrays.stream(element.getItems()).filter(x -> (x.getName() != null && !x.getName().isEmpty())).toArray(ItemElement[]::new));
                         adapter.setResults(items);
                         for(ItemElement item: element.getItems()){
                             Log.d("EComItemFragment", "onResponse Item " + item.getName() + ", description: " + item.getDescription());

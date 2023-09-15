@@ -35,6 +35,7 @@ android {
 }
 
 dependencies {
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.9.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.0")
     implementation("com.android.volley:volley:1.2.1")
