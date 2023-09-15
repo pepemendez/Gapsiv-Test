@@ -41,6 +41,12 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
+    private int page = 1;
+
+    private Boolean isLoading = false;
+
+    private Boolean isLastPage = false;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -81,6 +87,7 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         // Set the adapter
         if (binding.list instanceof RecyclerView) {
             Context context = binding.list.getContext();
@@ -93,7 +100,28 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
 
             adapter = new MyEComItemRecyclerViewAdapter(context);
 
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setAdapter(adapter);
+
+            recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
+                @Override
+                protected void loadMoreItems() {
+                    isLoading = true;
+                    page += 1;
+                    loadNextPage();
+                }
+
+                @Override
+                public boolean isLastPage() {
+                    return isLastPage;
+                }
+
+                @Override
+                public boolean isLoading() {
+                    return isLoading;
+                }
+            });
         }
 
         binding.searchView.setOnQueryTextListener(this);
@@ -105,13 +133,19 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
         binding.searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
     }
 
-    public void searchItems(String query){
+    public void loadNextPage() {
         binding.progressbar.setVisibility(View.VISIBLE);
-        eCommerceComponent.getData(getContext(), query, this::onResponse, this::onErrorResponse);
+        eCommerceComponent.getData(getContext(), query, page, this::onResponse, this::onErrorResponse);
+    }
+
+    public void searchItems(String query, int page){
+        binding.progressbar.setVisibility(View.VISIBLE);
+        eCommerceComponent.getData(getContext(), query, page, this::onResponse, this::onErrorResponse);
     }
 
     public void onResponse(JSONObject response) {
         binding.progressbar.setVisibility(View.GONE);
+        isLoading = false;
 
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -125,6 +159,7 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
 
     public void onErrorResponse(VolleyError error) {
         binding.progressbar.setVisibility(View.GONE);
+        isLoading = false;
 
         ItemElement errorItem = new ItemElement();
         errorItem.setName("No results for " + query);
@@ -136,7 +171,8 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
     public boolean onQueryTextSubmit(String query) {
         this.query = query;
         adapter.clear();
-        searchItems(query);
+        page = 1;
+        searchItems(query, page);
         return false;
     }
 

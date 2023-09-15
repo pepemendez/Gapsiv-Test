@@ -18,9 +18,9 @@ public class eCommerceComponent {
 
     private static String API = "https://00672285.us-south.apigw.appdomain.cloud/demo-gapsi/search?&query=";//[criterio]&page=[numeropagina]";
     private static String serverKey = "adb8204d-d574-4394-8c1a-53226a40876e";
-    public static void getData(Context applicationContext, String query, Response.Listener<JSONObject> response, Response.ErrorListener error){
+    public static void getData(Context applicationContext, String query, int page, Response.Listener<JSONObject> response, Response.ErrorListener error){
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, API + query +"&page=1", null, response, error){
+                (Request.Method.GET, API + query +"&page=" + page, null, response, error){
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<String, String>();
