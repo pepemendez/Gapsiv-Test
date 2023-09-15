@@ -15,15 +15,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.example.gapsi.databinding.FragmentItemListBinding;
-import com.example.gapsi.placeholder.PlaceholderContent;
+import com.example.gapsi.eComItemJavaquicktype.ECOMItem;
+import com.example.gapsi.eComItemJavaquicktype.ItemElement;
+import com.example.gapsi.eComItemJavaquicktype.ItemStackElement;
+import com.example.gapsi.repository.eCommerceComponent;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
  */
 public class EComItemFragment extends Fragment implements SearchView.OnQueryTextListener {
-    private ApiRepository _repository = new ApiRepository();
-
     private String query = "";
     private FragmentItemListBinding binding;
     private MyEComItemRecyclerViewAdapter adapter;
@@ -82,16 +92,69 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            adapter = new MyEComItemRecyclerViewAdapter(PlaceholderContent.ITEMS);
+            adapter = new MyEComItemRecyclerViewAdapter();
 
             recyclerView.setAdapter(adapter);
         }
+
+        binding.searchView.setOnClickListener(v -> {});
 
         //binding.searchView.getSuggestionsAdapter()
 
         binding.searchView.setOnQueryTextListener(this);
 
+        binding.progressbar.setVisibility(View.GONE);
 
+    }
+
+    public void searchItems(String query){
+
+        binding.progressbar.setVisibility(View.VISIBLE);
+        eCommerceComponent.getData(getContext(), query, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                binding.progressbar.setVisibility(View.GONE);
+
+                Log.d("EComItemFragment", "onResponse" + response);
+
+                ObjectMapper mapper = new ObjectMapper();
+                try {
+                    ECOMItem obj = mapper.readValue(response.toString(), ECOMItem.class);
+                     List<ItemStackElement> elements = Arrays.asList(obj.getItem()
+                            .getProps()
+                            .getPageProps()
+                            .getInitialData()
+                            .getSearchResult()
+                            .getItemStacks());
+
+                    for(ItemStackElement element:elements) {
+                        List<ItemElement> items = Arrays.asList(element.getItems());
+                        adapter.setResults(items);
+                        for(ItemElement item: element.getItems()){
+                            Log.d("EComItemFragment", "onResponse Item " + item.getName() + ", description: " + item.getDescription());
+                        }
+                    }
+                    Log.d("EComItemFragment", "onResponse " + elements);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                binding.progressbar.setVisibility(View.GONE);
+
+                ItemElement errorItem = new ItemElement();
+                errorItem.setName("No results for");
+                errorItem.setDescription(query);
+                List<ItemElement> items = Arrays.asList(new ItemElement[]{errorItem});
+                adapter.setResults(items);
+
+                Log.d("EComItemFragment", "error " + error.getMessage());
+            }
+        });
     }
 
     @Override
@@ -99,6 +162,8 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
         Log.d("EComItemFragment", "onQueryTextSubmit" + query);
         this.query = query;
         adapter.filter(query);
+
+        searchItems(query);
         return false;
     }
 

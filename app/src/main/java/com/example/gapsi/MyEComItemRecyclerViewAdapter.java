@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.gapsi.eComItemJavaquicktype.ItemElement;
 import com.example.gapsi.placeholder.PlaceholderContent.PlaceholderItem;
 import com.example.gapsi.databinding.FragmentItemBinding;
 
@@ -21,14 +22,13 @@ import java.util.Locale;
  */
 public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PlaceholderItem> mValues;
+    private final List<ItemElement> mValues;
 
-    private final List<PlaceholderItem> mAllValues;
+    private final List<ItemElement> mAllValues;
 
-    public MyEComItemRecyclerViewAdapter(List<PlaceholderItem> items) {
+    public MyEComItemRecyclerViewAdapter() {
         mAllValues = new ArrayList<>();
-        mAllValues.addAll(items);
-        mValues = items;
+        mValues = new ArrayList<>();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComIt
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mContentView.setText(mValues.get(position).getName() + "\n" + mValues.get(position).getDescription());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComIt
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mContentView;
-        public PlaceholderItem mItem;
+        public ItemElement mItem;
 
         public ViewHolder(FragmentItemBinding binding) {
             super(binding.getRoot());
@@ -64,6 +64,9 @@ public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComIt
         }
     }
 
+    public void setResults(List<ItemElement> items){
+        mValues.addAll(items);
+    }
     // filter name in Search Bar
     public void filter(String characterText) {
         Log.d("PlaceholderItem filter", characterText);
@@ -74,9 +77,9 @@ public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComIt
             mValues.addAll(mAllValues);
         } else {
             mValues.clear();
-            for (PlaceholderItem item: mAllValues) {
+            for (ItemElement item: mAllValues) {
                 //Log.d("PlaceholderItem", ""+ item.content + " " + item.details);
-                if ( item.content.toLowerCase(Locale.getDefault()).contains(characterText)) {
+                if ( item.getName().toLowerCase(Locale.getDefault()).contains(characterText)) {
                     mValues.add(item);
                 }
             }
