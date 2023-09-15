@@ -1,6 +1,12 @@
 package com.example.gapsi.eComItemJavaquicktype;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ECOMItem {
@@ -40,4 +46,21 @@ public class ECOMItem {
     public ECOMItemItem getItem() { return item; }
     @JsonProperty("item")
     public void setItem(ECOMItemItem value) { this.item = value; }
+
+    public List<ItemElement> getItemList(){
+        ItemStackElement[] elements = item.getProps()
+                .getPageProps()
+                .getInitialData()
+                .getSearchResult()
+                .getItemStacks();
+
+        for(ItemStackElement element:elements) {
+            List<ItemElement> items = Arrays.asList(Arrays.stream(element.getItems())
+                    .filter(x -> (x.getName() != null && !x.getName().isEmpty()))
+                    .toArray(ItemElement[]::new));
+            return items;
+        }
+
+        return new ArrayList<ItemElement>();
+    }
 }
