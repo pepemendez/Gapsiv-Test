@@ -42,7 +42,7 @@ public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComIt
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mContentView.setText(mValues.get(position).getName() + "\n" + mValues.get(position).getPrice());
+        holder.mContentView.setText(mValues.get(position).getName() + "\nPrice: " + mValues.get(position).getPrice());
         Glide.with(this.context)
                 .load(mValues.get(position).getImage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -79,25 +79,6 @@ public class MyEComItemRecyclerViewAdapter extends RecyclerView.Adapter<MyEComIt
     }
     public void setResults(List<ItemElement> items){
         mValues.addAll(items);
-        notifyDataSetChanged();
-    }
-    // filter name in Search Bar
-    public void filter(String characterText) {
-        Log.d("PlaceholderItem filter", characterText);
-
-        characterText = characterText.toLowerCase(Locale.getDefault());
-            mValues.clear();
-        if (characterText.length() == 0) {
-            mValues.addAll(mAllValues);
-        } else {
-            mValues.clear();
-            for (ItemElement item: mAllValues) {
-                //Log.d("PlaceholderItem", ""+ item.content + " " + item.details);
-                if ( item.getName().toLowerCase(Locale.getDefault()).contains(characterText)) {
-                    mValues.add(item);
-                }
-            }
-        }
         notifyDataSetChanged();
     }
 }

@@ -131,7 +131,7 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
                         List<ItemElement> items = Arrays.asList(Arrays.stream(element.getItems()).filter(x -> (x.getName() != null && !x.getName().isEmpty())).toArray(ItemElement[]::new));
                         adapter.setResults(items);
                         for(ItemElement item: element.getItems()){
-                            Log.d("EComItemFragment", "onResponse Item " + item.getName() + ", description: " + item.getDescription());
+                            Log.d("EComItemFragment", "onResponse Item " + item.getName() + ", description: " + item.getPrice());
                         }
                     }
                     Log.d("EComItemFragment", "onResponse " + elements);
