@@ -17,6 +17,7 @@ import android.widget.SearchView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.gapsi.StoredData.HistoricQuery;
 import com.example.gapsi.databinding.FragmentItemListBinding;
 import com.example.gapsi.eComItemJavaquicktype.ECOMItem;
 import com.example.gapsi.eComItemJavaquicktype.ItemElement;
@@ -24,16 +25,22 @@ import com.example.gapsi.eComItemJavaquicktype.ItemStackElement;
 import com.example.gapsi.repository.eCommerceComponent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.bson.types.ObjectId;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import io.realm.Realm;
+import io.realm.RealmQuery;
 
 /**
  * A fragment representing a list of Items.
  */
 public class EComItemFragment extends Fragment implements SearchView.OnQueryTextListener {
+//    RealmConfiguration config = new RealmConfiguration.Builder().build();
+//    Realm backgroundThreadRealm = Realm.getInstance(config);
+
     private String query = "";
     private FragmentItemListBinding binding;
     private MyEComItemRecyclerViewAdapter adapter;
@@ -105,6 +112,19 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
 
         binding.progressbar.setVisibility(View.GONE);
 
+        try {
+            Realm realm = Realm.getDefaultInstance();
+            RealmQuery<HistoricQuery> historic = realm.where(HistoricQuery.class);
+            List<HistoricQuery> historicQuery =  Arrays.asList(historic.findAllAsync().stream().toArray(HistoricQuery[]::new));
+
+            for (HistoricQuery queries: historicQuery) {
+                Log.d("EComItemFragment", "Queries: " + queries);
+            }
+
+        }catch(Exception e){
+            //handle exceptions
+        }
+
     }
 
     public void searchItems(String query){
@@ -147,8 +167,7 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
                 binding.progressbar.setVisibility(View.GONE);
 
                 ItemElement errorItem = new ItemElement();
-                errorItem.setName("No results for");
-                errorItem.setDescription(query);
+                errorItem.setName("No results for " + query);
                 List<ItemElement> items = Arrays.asList(new ItemElement[]{errorItem});
                 adapter.setResults(items);
 
@@ -162,8 +181,19 @@ public class EComItemFragment extends Fragment implements SearchView.OnQueryText
         Log.d("EComItemFragment", "onQueryTextSubmit" + query);
         this.query = query;
         adapter.clear();
-
         searchItems(query);
+
+        try {
+            Realm realm = Realm.getDefaultInstance();
+            realm.executeTransaction(r->{
+                HistoricQuery historicQuery = r.createObject(HistoricQuery.class, new ObjectId());
+                historicQuery.setQuery(query);
+            });
+        }catch(Exception e){
+            //handle exceptions
+        }
+
+
         return false;
     }
 

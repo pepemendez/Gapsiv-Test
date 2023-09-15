@@ -1,6 +1,11 @@
+
+
 plugins {
     id("com.android.application")
 }
+
+apply(plugin="realm-android")
+
 
 android {
     namespace = "com.example.gapsi"
@@ -26,8 +31,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding = true
@@ -35,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation("io.realm:realm-gradle-plugin:10.15.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.9.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.0")

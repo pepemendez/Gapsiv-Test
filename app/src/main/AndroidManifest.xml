@@ -14,6 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Gapsi"
         tools:targetApi="31">
+        <provider android:name=".MySuggestionProvider"
+            android:authorities="com.example.MySuggestionProvider" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
